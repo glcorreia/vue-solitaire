@@ -1,25 +1,25 @@
 <template>
 	<div class="board">
 		<div class="foundation">
-			<single-card/>
-			<single-card/>
-			<single-card/>
-			<single-card/>
+			<single-card />
+			<single-card />
+			<single-card />
+			<single-card />
 		</div>
 
 		<div class="stock-waste">
-			<single-card/>
-			<single-card cover/>
+			<single-card />
+			<single-card deckCover/>
 		</div>
 
 		<div class="tableau">
-			<single-card/>
-			<single-card/>
-			<single-card/>
-			<single-card/>
-			<single-card/>
-			<single-card/>
-			<single-card/>
+			<single-card randomCard/>
+			<single-card randomCard/>
+			<single-card randomCard/>
+			<single-card randomCard/>
+			<single-card randomCard/>
+			<single-card randomCard/>
+			<single-card randomCard/>
 		</div>
 	</div>
 </template>
@@ -31,13 +31,12 @@ import SingleCard from '@/components/SingleCard'
 <style scoped>
 .board {
 	margin: auto;
-	border: 3px solid gray;
+
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
 	width: 700px;
-	height: 400px;
-	background-color: #047c04;
+	height: 100%;
 	position: relative;
 }
 .foundation {
@@ -53,7 +52,7 @@ import SingleCard from '@/components/SingleCard'
 	display: flex;
 	flex-direction: row;
 	gap: 15px;
-	margin: 20px 60px 0 0;
+	margin: 20px 25px 0 0;
 }
 .tableau {
 	display: flex;
