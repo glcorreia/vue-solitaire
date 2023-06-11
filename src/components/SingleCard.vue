@@ -1,5 +1,5 @@
 <template>
-	<div class="card-base">
+	<div class="card-base" @cardClicked="emit('cardClicked', props.cardId)">
 		<img :src="getCardPath()" v-if="!emptyCard"/>
 	</div>
 </template>
@@ -13,6 +13,9 @@ import cardExtras from '@/assets/cards/cardsExtras.json'
 /* Vars */
 const emptyCard = ref(false)
 
+/* Emmitters */
+const emit = defineEmits(['cardClicked'])
+
 /* Props
 @cardId { String } Id of specific card
 @cover { Boolean } Returns fliped card
@@ -20,12 +23,12 @@ const emptyCard = ref(false)
 */
 const props = defineProps({
 	cardId: String,
-	deckCover: Boolean,
+	cover: Boolean,
 	randomCard: Boolean
 })
 
 const getCardPath = () => {
-	if (props.deckCover) return require('../assets/cards/' + cardExtras[1].filename) // Deck cover 1
+	if (props.cover) return require('../assets/cards/' + cardExtras[1].filename) // Deck cover 1
 	if (props.cardId) return require('../assets/cards/' + cardData[cardData.findIndex(card => card.id === props.cardId)].filename) // Find index where id = prop and returns it's filename
 	if (props.randomCard) return require('../assets/cards/' + cardData[randomCardPicker(0, 51)].filename)
 	else {
