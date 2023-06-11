@@ -78,13 +78,20 @@ const startGame = () => {
 	const remainingCards = []
 	let arrLen
 	
+	cardsOnStack.value = [] // Reset decks
+	cardsOnTable.value = [] // Reset decks
+	
 	cardsOnStack.value = fy_shuffle(cardData) // Shuffle deck
-	cardsOnTable.value = [] // Clear cards on table
 	arrLen = cardsOnStack.value.length
 
 	for (let i = 0; i < arrLen; i++) {
-		if (i < 28)
+		cardsOnStack.value[i].cover = false // Reset flipped cards
+
+		if (i < 28) {
 			cardsOnTable.value.push(cardsOnStack.value[i])
+			if (i < 18)
+				cardsOnTable.value[i].cover = true // Hide first 3 rows of cards
+		}
 		else
 			remainingCards.push(cardsOnStack.value[i])
 	}

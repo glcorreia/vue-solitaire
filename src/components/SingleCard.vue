@@ -14,8 +14,8 @@ import cardExtras from '@/assets/cards/cardsExtras.json'
 const emptyCard = ref(false)
 
 /* Props
-@cardId { String } Id of specific card
-@cover { Boolean } Returns fliped card
+@params.cardId { String } Id of specific card
+@params.cover { Boolean } Returns fliped card
 @randomCard { Boolean } Returns random Card
 */
 const props = defineProps({
