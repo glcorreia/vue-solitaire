@@ -1,5 +1,5 @@
 <template>
-	<div class="card-base" @cardClicked="emit('cardClicked', props.cardId)">
+	<div class="card-base">
 		<img :src="getCardPath()" v-if="!emptyCard"/>
 	</div>
 </template>
@@ -45,7 +45,6 @@ const randomCardPicker = (min, max) => {
 .card-base {
 	width: 56px;
 	height: 86px;
-	margin: 0;
 }
 img {
 	border-radius: 7px;
