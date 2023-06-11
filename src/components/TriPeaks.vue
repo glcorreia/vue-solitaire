@@ -1,46 +1,46 @@
 <template>
 	<div class="board">
 		<div class="row1">
-			<single-card :params="cardProps('table', 0)" @click="cardClickHandler(0)"/>
-			<single-card :params="cardProps('table', 1)" @click="cardClickHandler(1)"/>
-			<single-card :params="cardProps('table', 2)" @click="cardClickHandler(2)"/>
+			<single-card :params="cardProps('table', 0)" @click="cardClickHandler('table', 0)"/>
+			<single-card :params="cardProps('table', 1)" @click="cardClickHandler('table', 1)"/>
+			<single-card :params="cardProps('table', 2)" @click="cardClickHandler('table', 2)"/>
 		</div>
 		<div class="row2-all">
 			<div class="row2-pairs">
-				<single-card :params="cardProps('table', 3)" @click="cardClickHandler(3)"/>
-				<single-card :params="cardProps('table', 4)" @click="cardClickHandler(4)"/>
+				<single-card :params="cardProps('table', 3)" @click="cardClickHandler('table', 3)"/>
+				<single-card :params="cardProps('table', 4)" @click="cardClickHandler('table', 4)"/>
 			</div>
 			<div class="row2-pairs">
-				<single-card :params="cardProps('table', 5)" @click="cardClickHandler(5)"/>
-				<single-card :params="cardProps('table', 6)" @click="cardClickHandler(6)"/>
+				<single-card :params="cardProps('table', 5)" @click="cardClickHandler('table', 5)"/>
+				<single-card :params="cardProps('table', 6)" @click="cardClickHandler('table', 6)"/>
 			</div>
 			<div class="row2-pairs">
-				<single-card :params="cardProps('table', 7)" @click="cardClickHandler(7)"/>
-				<single-card :params="cardProps('table', 8)" @click="cardClickHandler(8)"/>
+				<single-card :params="cardProps('table', 7)" @click="cardClickHandler('table', 7)"/>
+				<single-card :params="cardProps('table', 8)" @click="cardClickHandler('table', 8)"/>
 			</div>
 		</div>
 		<div class="row3">
-			<single-card :params="cardProps('table', 9)" @click="cardClickHandler(9)"/>
-			<single-card :params="cardProps('table', 10)" @click="cardClickHandler(10)"/>
-			<single-card :params="cardProps('table', 11)" @click="cardClickHandler(11)"/>
-			<single-card :params="cardProps('table', 12)" @click="cardClickHandler(12)"/>
-			<single-card :params="cardProps('table', 13)" @click="cardClickHandler(13)"/>
-			<single-card :params="cardProps('table', 14)" @click="cardClickHandler(14)"/>
-			<single-card :params="cardProps('table', 15)" @click="cardClickHandler(15)"/>
-			<single-card :params="cardProps('table', 16)" @click="cardClickHandler(16)"/>
-			<single-card :params="cardProps('table', 17)" @click="cardClickHandler(17)"/>
+			<single-card :params="cardProps('table', 9)" @click="cardClickHandler('table', 9)"/>
+			<single-card :params="cardProps('table', 10)" @click="cardClickHandler('table', 10)"/>
+			<single-card :params="cardProps('table', 11)" @click="cardClickHandler('table', 11)"/>
+			<single-card :params="cardProps('table', 12)" @click="cardClickHandler('table', 12)"/>
+			<single-card :params="cardProps('table', 13)" @click="cardClickHandler('table', 13)"/>
+			<single-card :params="cardProps('table', 14)" @click="cardClickHandler('table', 14)"/>
+			<single-card :params="cardProps('table', 15)" @click="cardClickHandler('table', 15)"/>
+			<single-card :params="cardProps('table', 16)" @click="cardClickHandler('table', 16)"/>
+			<single-card :params="cardProps('table', 17)" @click="cardClickHandler('table', 17)"/>
 		</div>
 		<div class="row4">
-			<single-card :params="cardProps('table', 18)" @click="cardClickHandler(18)"/>
-			<single-card :params="cardProps('table', 19)" @click="cardClickHandler(19)"/>
-			<single-card :params="cardProps('table', 20)" @click="cardClickHandler(20)"/>
-			<single-card :params="cardProps('table', 21)" @click="cardClickHandler(21)"/>
-			<single-card :params="cardProps('table', 22)" @click="cardClickHandler(22)"/>
-			<single-card :params="cardProps('table', 23)" @click="cardClickHandler(23)"/>
-			<single-card :params="cardProps('table', 24)" @click="cardClickHandler(24)"/>
-			<single-card :params="cardProps('table', 25)" @click="cardClickHandler(25)"/>
-			<single-card :params="cardProps('table', 26)" @click="cardClickHandler(26)"/>
-			<single-card :params="cardProps('table', 27)" @click="cardClickHandler(27)"/>
+			<single-card :params="cardProps('table', 18)" @click="cardClickHandler('table', 18)"/>
+			<single-card :params="cardProps('table', 19)" @click="cardClickHandler('table', 19)"/>
+			<single-card :params="cardProps('table', 20)" @click="cardClickHandler('table', 20)"/>
+			<single-card :params="cardProps('table', 21)" @click="cardClickHandler('table', 21)"/>
+			<single-card :params="cardProps('table', 22)" @click="cardClickHandler('table', 22)"/>
+			<single-card :params="cardProps('table', 23)" @click="cardClickHandler('table', 23)"/>
+			<single-card :params="cardProps('table', 24)" @click="cardClickHandler('table', 24)"/>
+			<single-card :params="cardProps('table', 25)" @click="cardClickHandler('table', 25)"/>
+			<single-card :params="cardProps('table', 26)" @click="cardClickHandler('table', 26)"/>
+			<single-card :params="cardProps('table', 27)" @click="cardClickHandler('table', 27)"/>
 		</div>
 	</div>
 	<div class="stock-waste">
@@ -52,7 +52,7 @@
 			:key="card.id"
 			:style="{'z-index': 0 - index, 'left': 5 + index * 5 + 'px' }"
 			class="stock-cards">
-				<single-card :params="{ cover: true }" />
+				<single-card :params="{ cover: true }" @click="index === 0 ? cardClickHandler('stock') : null"/>
 			</div>
 			<div class="game-over"></div>
 		</div>
@@ -135,9 +135,14 @@ function cardProps(whereIsCard, singleCardId) {
 	
 }
 
-const cardClickHandler = cardPosition => {
-	cardsOnTable.value[cardPosition].cover = !cardsOnTable.value[cardPosition].cover
-	gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
+const cardClickHandler = (where, cardPosition) => {
+	if (where === 'table') {
+		cardsOnTable.value[cardPosition].cover = !cardsOnTable.value[cardPosition].cover
+		gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
+	}
+	if (where === 'stock') {
+		gameStatus.value = 'Stock pile clicked.'
+	}
 }
 
 function cardToText (card) {
