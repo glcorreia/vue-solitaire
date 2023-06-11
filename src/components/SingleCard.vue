@@ -13,23 +13,21 @@ import cardExtras from '@/assets/cards/cardsExtras.json'
 /* Vars */
 const emptyCard = ref(false)
 
-/* Emmitters */
-const emit = defineEmits(['cardClicked'])
-
 /* Props
 @cardId { String } Id of specific card
 @cover { Boolean } Returns fliped card
-@random { Boolean } Returns random Card
+@randomCard { Boolean } Returns random Card
 */
 const props = defineProps({
-	cardId: String,
-	cover: Boolean,
+	params: Object,
 	randomCard: Boolean
 })
 
 const getCardPath = () => {
-	if (props.cover) return require('../assets/cards/' + cardExtras[1].filename) // Deck cover 1
-	if (props.cardId) return require('../assets/cards/' + cardData[cardData.findIndex(card => card.id === props.cardId)].filename) // Find index where id = prop and returns it's filename
+	if (props.params) {
+		if (props.params.cover) return require('../assets/cards/' + cardExtras[1].filename) // Deck cover 1
+		if (props.params.cardId) return require('../assets/cards/' + cardData[cardData.findIndex(card => card.id === props.params.cardId)].filename) // Find index where id = prop and returns it's filename
+	}
 	if (props.randomCard) return require('../assets/cards/' + cardData[randomCardPicker(0, 51)].filename)
 	else {
 		emptyCard.value = true

@@ -1,51 +1,50 @@
 <template>
 	<div class="board">
 		<div class="row1">
-			<single-card :cardId="cardsOnTable[0].id" @click="cardClickHandler(cardsOnTable[0])" :cover="cardsOnTable[0].cover"/>
-			<!-- amanha: passar isto tudo para dentro de uma funcao ou computed ou assim que receba parametros -->
-			<single-card :cardId="cardsOnTable[1].id"/>
-			<single-card :cardId="cardsOnTable[2].id"/>
+			<single-card :params="cardProps(0)" @click="cardClickHandler(0)"/>
+			<single-card :params="cardProps(1)" @click="cardClickHandler(1)"/>
+			<single-card :params="cardProps(2)" @click="cardClickHandler(2)"/>
 		</div>
 		<div class="row2-all">
 			<div class="row2-pairs">
-				<single-card :cardId="cardsOnTable[3].id" @click="cardClickHandler(cardsOnTable[3])" :cover="cardsOnTable[3].cover"/>
-				<single-card :cardId="cardsOnTable[4].id"/>
+				<single-card :params="cardProps(3)" @click="cardClickHandler(3)"/>
+				<single-card :params="cardProps(4)" @click="cardClickHandler(4)"/>
 			</div>
 			<div class="row2-pairs">
-				<single-card :cardId="cardsOnTable[5].id"/>
-				<single-card :cardId="cardsOnTable[6].id"/>
+				<single-card :params="cardProps(5)" @click="cardClickHandler(5)"/>
+				<single-card :params="cardProps(6)" @click="cardClickHandler(6)"/>
 			</div>
 			<div class="row2-pairs">
-				<single-card :cardId="cardsOnTable[7].id"/>
-				<single-card :cardId="cardsOnTable[8].id"/>
+				<single-card :params="cardProps(7)" @click="cardClickHandler(7)"/>
+				<single-card :params="cardProps(8)" @click="cardClickHandler(8)"/>
 			</div>
 		</div>
 		<div class="row3">
-			<single-card :cardId="cardsOnTable[9].id"/>
-			<single-card :cardId="cardsOnTable[10].id"/>
-			<single-card :cardId="cardsOnTable[11].id"/>
-			<single-card :cardId="cardsOnTable[12].id"/>
-			<single-card :cardId="cardsOnTable[13].id"/>
-			<single-card :cardId="cardsOnTable[14].id"/>
-			<single-card :cardId="cardsOnTable[15].id"/>
-			<single-card :cardId="cardsOnTable[16].id"/>
-			<single-card :cardId="cardsOnTable[17].id"/>
+			<single-card :params="cardProps(9)" @click="cardClickHandler(9)"/>
+			<single-card :params="cardProps(10)" @click="cardClickHandler(10)"/>
+			<single-card :params="cardProps(11)" @click="cardClickHandler(11)"/>
+			<single-card :params="cardProps(12)" @click="cardClickHandler(12)"/>
+			<single-card :params="cardProps(13)" @click="cardClickHandler(13)"/>
+			<single-card :params="cardProps(14)" @click="cardClickHandler(14)"/>
+			<single-card :params="cardProps(15)" @click="cardClickHandler(15)"/>
+			<single-card :params="cardProps(16)" @click="cardClickHandler(16)"/>
+			<single-card :params="cardProps(17)" @click="cardClickHandler(17)"/>
 		</div>
 		<div class="row4">
-			<single-card :cardId="cardsOnTable[18].id"/>
-			<single-card :cardId="cardsOnTable[19].id"/>
-			<single-card :cardId="cardsOnTable[20].id"/>
-			<single-card :cardId="cardsOnTable[21].id"/>
-			<single-card :cardId="cardsOnTable[22].id"/>
-			<single-card :cardId="cardsOnTable[23].id"/>
-			<single-card :cardId="cardsOnTable[24].id"/>
-			<single-card :cardId="cardsOnTable[25].id"/>
-			<single-card :cardId="cardsOnTable[26].id"/>
-			<single-card :cardId="cardsOnTable[27].id"/>
+			<single-card :params="cardProps(18)" @click="cardClickHandler(18)"/>
+			<single-card :params="cardProps(19)" @click="cardClickHandler(19)"/>
+			<single-card :params="cardProps(20)" @click="cardClickHandler(20)"/>
+			<single-card :params="cardProps(21)" @click="cardClickHandler(21)"/>
+			<single-card :params="cardProps(22)" @click="cardClickHandler(22)"/>
+			<single-card :params="cardProps(23)" @click="cardClickHandler(23)"/>
+			<single-card :params="cardProps(24)" @click="cardClickHandler(24)"/>
+			<single-card :params="cardProps(25)" @click="cardClickHandler(25)"/>
+			<single-card :params="cardProps(26)" @click="cardClickHandler(26)"/>
+			<single-card :params="cardProps(27)" @click="cardClickHandler(27)"/>
 		</div>
 		<div class="stock-waste">
+			<single-card />
 			<single-card randomCard/>
-			<single-card cover/>
 		</div>
 		<button class="btn-reset" @click="startGame">New Game</button>
 	</div>
@@ -107,10 +106,17 @@ const fy_shuffle = (array) => {
 	return array
 }
 
-const cardClickHandler = card => {
-	const index = cardsOnTable.value.findIndex(el => el.id === card.id)
+function cardProps(singleCardId) {
+	return {
+		cardId: cardsOnTable.value[singleCardId].id,
+		cover: cardsOnTable.value[singleCardId].cover
+	}
+}
 
-	cardsOnTable.value[index].cover = !cardsOnTable.value[index].cover
+const cardClickHandler = cardPosition => {
+	// const index = cardsOnTable.value.findIndex(el => el.id === card.id)
+
+	cardsOnTable.value[cardPosition].cover = !cardsOnTable.value[cardPosition].cover
 }
 // function cardToText (card) {
 // 	let cardSuit, cardValue
