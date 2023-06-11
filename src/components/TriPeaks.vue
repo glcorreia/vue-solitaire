@@ -43,13 +43,17 @@
 			<single-card :params="cardProps(27)" @click="cardClickHandler(27)"/>
 		</div>
 		<div class="stock-waste">
-			<single-card />
-			<single-card randomCard/>
+			<div class="inside-border">
+				<single-card />
+			</div>
+			<div class="inside-border">
+				<single-card randomCard/>
+			</div>
 		</div>
 		<button class="btn-reset" @click="startGame">New Game</button>
 	</div>
 	<div class="msg-log">
-		bla bla bla
+		<h5 style="color:lightgrey">Log: {{ gameStatus }}</h5>
 	</div>
 
 	<!-- <div class="msg-log">
@@ -72,12 +76,13 @@ import { ref, onBeforeMount } from 'vue'
 
 const cardsOnStack = ref([])
 const cardsOnTable = ref([])
+const gameStatus = ref('')
 
 const startGame = () => {
-	console.log('start game.')
 	const remainingCards = []
 	let arrLen
 	
+	gameStatus.value = ''
 	cardsOnStack.value = [] // Reset decks
 	cardsOnTable.value = [] // Reset decks
 	
@@ -97,6 +102,7 @@ const startGame = () => {
 	}
 
 	cardsOnStack.value = remainingCards
+	gameStatus.value = 'New game started.'
 }
 
 // Fisher-Yates shuffle
@@ -121,50 +127,50 @@ function cardProps(singleCardId) {
 }
 
 const cardClickHandler = cardPosition => {
-	// const index = cardsOnTable.value.findIndex(el => el.id === card.id)
-
 	cardsOnTable.value[cardPosition].cover = !cardsOnTable.value[cardPosition].cover
+	gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
 }
-// function cardToText (card) {
-// 	let cardSuit, cardValue
 
-// 	switch (card.slice(0, 1)) {
-// 		case '1':
-// 			cardSuit = '♣'
-// 			break
-// 		case '2':
-// 			cardSuit = '♦'
-// 			break
-// 		case '3':
-// 			cardSuit = '♠'
-// 			break
-// 		case '4':
-// 			cardSuit = '♥'
-// 			break
-// 	}
+function cardToText (card) {
+	let cardSuit, cardValue
 
-// 	switch (card.slice(1, 3)) {
-// 		case '01':
-// 			cardValue = 'A'
-// 			break
-// 		case '10':
-// 			cardValue = '10'
-// 			break
-// 		case '11':
-// 			cardValue = 'J'
-// 			break
-// 		case '12':
-// 			cardValue = 'Q'
-// 			break
-// 		case '13':
-// 			cardValue = 'K'
-// 			break
-// 		default:
-// 			cardValue = card.slice(2, 3)
-// 			break
-// 	}
-// 	return '[' + cardValue + cardSuit + ']'
-// }
+	switch (card.slice(0, 1)) {
+		case '1':
+			cardSuit = '♣'
+			break
+		case '2':
+			cardSuit = '♦'
+			break
+		case '3':
+			cardSuit = '♠'
+			break
+		case '4':
+			cardSuit = '♥'
+			break
+	}
+
+	switch (card.slice(1, 3)) {
+		case '01':
+			cardValue = 'A'
+			break
+		case '10':
+			cardValue = '10'
+			break
+		case '11':
+			cardValue = 'J'
+			break
+		case '12':
+			cardValue = 'Q'
+			break
+		case '13':
+			cardValue = 'K'
+			break
+		default:
+			cardValue = card.slice(2, 3)
+			break
+	}
+	return cardValue + cardSuit
+}
 
 onBeforeMount(() => {
 	startGame()
@@ -240,8 +246,13 @@ onBeforeMount(() => {
 	top: 250px;
 	display: flex;
 	flex-direction: row;
-	gap: 5px;
+	gap: 10px;
 	margin: auto;
 	z-index: 5;
+}
+.inside-border {
+	-webkit-box-shadow:inset 0px 0px 0px 3px #ffffff82;
+	-moz-box-shadow:inset 0px 0px 0px 3px #ffffff82;
+	box-shadow:inset 0px 0px 0px 3px #ffffff82;
 }
 </style>
