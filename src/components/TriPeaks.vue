@@ -1,46 +1,29 @@
 <template>
 	<div class="board">
 		<div class="row1">
-			<single-card :params="cardProps('table', 0)" @click="cardClickHandler('table', 0)"/>
-			<single-card :params="cardProps('table', 1)" @click="cardClickHandler('table', 1)"/>
-			<single-card :params="cardProps('table', 2)" @click="cardClickHandler('table', 2)"/>
+			<div v-for="card in range(0,2)" :key="card" :class="sendToBack('row1-pos', card)">
+				<single-card :params="cardProps('table', card)" @click="cardClickHandler('table', card)"/>
+			</div>
 		</div>
 		<div class="row2-all">
-			<div class="row2-pairs">
-				<single-card :params="cardProps('table', 3)" @click="cardClickHandler('table', 3)"/>
-				<single-card :params="cardProps('table', 4)" @click="cardClickHandler('table', 4)"/>
-			</div>
-			<div class="row2-pairs">
-				<single-card :params="cardProps('table', 5)" @click="cardClickHandler('table', 5)"/>
-				<single-card :params="cardProps('table', 6)" @click="cardClickHandler('table', 6)"/>
-			</div>
-			<div class="row2-pairs">
-				<single-card :params="cardProps('table', 7)" @click="cardClickHandler('table', 7)"/>
-				<single-card :params="cardProps('table', 8)" @click="cardClickHandler('table', 8)"/>
+			<div v-for="group in 3" :key="group" class="row2-pairs">
+				<div :class="sendToBack('row2-pos', group+2)">
+					<single-card :params="cardProps('table', group+2)" @click="cardClickHandler('table', group+2)"/>
+				</div>
+				<div :class="sendToBack('row2-pos', group+5)">
+					<single-card :params="cardProps('table', group+5)" @click="cardClickHandler('table', group+5)"/>
+				</div>
 			</div>
 		</div>
 		<div class="row3">
-			<single-card :params="cardProps('table', 9)" @click="cardClickHandler('table', 9)"/>
-			<single-card :params="cardProps('table', 10)" @click="cardClickHandler('table', 10)"/>
-			<single-card :params="cardProps('table', 11)" @click="cardClickHandler('table', 11)"/>
-			<single-card :params="cardProps('table', 12)" @click="cardClickHandler('table', 12)"/>
-			<single-card :params="cardProps('table', 13)" @click="cardClickHandler('table', 13)"/>
-			<single-card :params="cardProps('table', 14)" @click="cardClickHandler('table', 14)"/>
-			<single-card :params="cardProps('table', 15)" @click="cardClickHandler('table', 15)"/>
-			<single-card :params="cardProps('table', 16)" @click="cardClickHandler('table', 16)"/>
-			<single-card :params="cardProps('table', 17)" @click="cardClickHandler('table', 17)"/>
+			<div v-for="card in range(9,17)" :key="card" :class="sendToBack('row3-pos', card)">
+				<single-card :params="cardProps('table', card)" @click="cardClickHandler('table', card)"/>
+			</div>
 		</div>
 		<div class="row4">
-			<single-card :params="cardProps('table', 18)" @click="cardClickHandler('table', 18)"/>
-			<single-card :params="cardProps('table', 19)" @click="cardClickHandler('table', 19)"/>
-			<single-card :params="cardProps('table', 20)" @click="cardClickHandler('table', 20)"/>
-			<single-card :params="cardProps('table', 21)" @click="cardClickHandler('table', 21)"/>
-			<single-card :params="cardProps('table', 22)" @click="cardClickHandler('table', 22)"/>
-			<single-card :params="cardProps('table', 23)" @click="cardClickHandler('table', 23)"/>
-			<single-card :params="cardProps('table', 24)" @click="cardClickHandler('table', 24)"/>
-			<single-card :params="cardProps('table', 25)" @click="cardClickHandler('table', 25)"/>
-			<single-card :params="cardProps('table', 26)" @click="cardClickHandler('table', 26)"/>
-			<single-card :params="cardProps('table', 27)" @click="cardClickHandler('table', 27)"/>
+			<div v-for="card in range(18,27)" :key="card" :class="sendToBack('row4-pos', card)">
+				<single-card :params="cardProps('table', card)" @click="cardClickHandler('table', card)"/>
+			</div>
 		</div>
 	</div>
 	<div class="stock-waste">
@@ -50,7 +33,7 @@
 		<div class="stock">
 			<div v-for="(card, index) in cardsOnStock"
 			:key="card.id"
-			:style="{'z-index': 0 - index, 'left': 5 + index * 5 + 'px' }"
+			:style="{'z-index': 50 - index, 'left': 5 + index * 5 + 'px' }"
 			class="stock-cards">
 				<single-card :params="{ cover: true }" @click="index === 0 ? cardClickHandler('stock') : null"/>
 			</div>
@@ -90,21 +73,36 @@ const startGame = () => {
 
 	for (let i = 0; i < arrLen; i++) {
 		cardsOnStock.value[i].cover = false // Reset flipped cards
+		cardsOnStock.value[i].visible = true // Reset flipped cards
 
 		if (i < 28) {
 			cardsOnTable.value.push(cardsOnStock.value[i])
-			if (i < 18)
+			if (i < 18) {
 				cardsOnTable.value[i].cover = true // Hide first 3 rows of cards
+			}
 		}
-		else if (i === 28) 
+		else if (i === 28) {
 			cardsOnWaste.value.push(cardsOnStock.value[i])
-		else
+		}
+		else {
 			remainingCards.push(cardsOnStock.value[i])
+		}
 	}
 
 	cardsOnStock.value = remainingCards
 	cardsLeft.value = cardsOnTable.value.length
 	gameStatus.value = 'New game started.'
+}
+
+const range = (start, end) => {
+	return Array(end - start + 1).fill().map((_, idx) => start + idx)
+}
+
+function sendToBack(positionClass, card) {
+	if (cardsOnTable.value[card].visible) {
+		return positionClass
+	}
+	return 'send-back'
 }
 
 // Fisher-Yates shuffle
@@ -122,26 +120,38 @@ const fy_shuffle = (array) => {
 }
 
 function cardProps(whereIsCard, singleCardId) {
-	if (whereIsCard === 'table')
+	if (whereIsCard === 'table') {
 		return {
 			cardId: cardsOnTable.value[singleCardId].id,
 			cover: cardsOnTable.value[singleCardId].cover
 		}
-	if (whereIsCard === 'waste')
+	}
+	if (whereIsCard === 'waste') {
 		return {
 			cardId: cardsOnWaste.value.slice(-1)[0].id,
 			cover: false
+		}
 	}
 	
 }
 
+const checkWin = () => {
+	console.log('checkWin')
+}
+
 const cardClickHandler = (where, cardPosition) => {
 	if (where === 'table') {
-		cardsOnTable.value[cardPosition].cover = !cardsOnTable.value[cardPosition].cover
+		if (cardsOnTable.value[cardPosition].cover) cardsOnTable.value[cardPosition].cover = false
+		else {
+			cardsOnTable.value[cardPosition].visible = false
+		}
+
 		gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
 	}
 	if (where === 'stock') {
+		cardsOnWaste.value.push(cardsOnStock.value.pop())
 		gameStatus.value = 'Stock pile clicked.'
+		checkWin()
 	}
 }
 
@@ -202,13 +212,15 @@ onBeforeMount(() => {
 	height: 290px;
 	position: relative;
 	align-items: center;
+	background-color: #257925;
+	
 }
 .row1 {
 	display: flex;
 	flex-direction: row;
 	gap: 125px;
-	z-index: 2;
 }
+.row1-pos { z-index: 1;}
 .row2-all {
 	position: absolute;
 	top: 43px;
@@ -217,21 +229,21 @@ onBeforeMount(() => {
 	gap: 65px;
 	margin: auto;
 	align-content: center;
-	z-index: 2;
 }
 .row2-pairs {
 	display: flex;
 	flex-direction: row;
 	gap: 5px;
 }
+.row2-pos { z-index: 2;}
 .row3 {
 	position: absolute;
 	top: 86px;
 	display: flex;
 	flex-direction: row;
 	gap: 5px;
-	z-index: 3;
 }
+.row3-pos { z-index: 3;}
 .row4 {
 	position: absolute;
 	top: 129px;
@@ -239,8 +251,8 @@ onBeforeMount(() => {
 	flex-direction: row;
 	gap: 5px;
 	margin: auto;
-	z-index: 4;
 }
+.row4-pos {	z-index: 4; }
 .stock-waste {
 	position: relative;
 	width: 700px;
@@ -275,9 +287,8 @@ onBeforeMount(() => {
 	width: 50px;
 	height: 50px;
 	top: 18px;
-	left: 3px;
 	z-index: -1;
-	left: 5px;
+	left: 8px;
 }
 .msg-log {
 	width: 700px;
@@ -285,5 +296,8 @@ onBeforeMount(() => {
 }
 .btn-reset {
 	align-self: auto;
+}
+.send-back {
+	z-index: -50;
 }
 </style>

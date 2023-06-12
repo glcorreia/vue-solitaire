@@ -31,7 +31,7 @@ const getCardPath = () => {
 	if (props.randomCard) return require('../assets/cards/' + cardData[randomCardPicker(0, 51)].filename)
 	else {
 		emptyCard.value = true
-		return require('../assets/cards/' + cardData[0].filename) // Return empty card
+		return // Return empty card
 	}
 }
 
