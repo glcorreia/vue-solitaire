@@ -117,6 +117,30 @@ const checkPlay = (cardPosition) => {
 	gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
 }
 
+const checkVisibility = () => {
+	// First row
+	if (!cardVisible(3) && !cardVisible(6)) { cardsOnTable.value[0].cover = false }
+	if (!cardVisible(4) && !cardVisible(7)) { cardsOnTable.value[1].cover = false }
+	if (!cardVisible(5) && !cardVisible(8)) { cardsOnTable.value[2].cover = false }
+	// Second row
+	if (!cardVisible(9) && !cardVisible(10)) { cardsOnTable.value[3].cover = false }
+	if (!cardVisible(10) && !cardVisible(11)) { cardsOnTable.value[6].cover = false }
+	if (!cardVisible(12) && !cardVisible(13)) { cardsOnTable.value[4].cover = false }
+	if (!cardVisible(13) && !cardVisible(14)) { cardsOnTable.value[7].cover = false }
+	if (!cardVisible(15) && !cardVisible(16)) { cardsOnTable.value[5].cover = false }
+	if (!cardVisible(16) && !cardVisible(17)) { cardsOnTable.value[8].cover = false }
+	// Third row
+	if (!cardVisible(18) && !cardVisible(19)) { cardsOnTable.value[9].cover = false }
+	if (!cardVisible(19) && !cardVisible(20)) { cardsOnTable.value[10].cover = false }
+	if (!cardVisible(20) && !cardVisible(21)) { cardsOnTable.value[11].cover = false }
+	if (!cardVisible(21) && !cardVisible(22)) { cardsOnTable.value[12].cover = false }
+	if (!cardVisible(22) && !cardVisible(23)) { cardsOnTable.value[13].cover = false }
+	if (!cardVisible(23) && !cardVisible(24)) { cardsOnTable.value[14].cover = false }
+	if (!cardVisible(24) && !cardVisible(25)) { cardsOnTable.value[15].cover = false }
+	if (!cardVisible(25) && !cardVisible(26)) { cardsOnTable.value[16].cover = false }
+	if (!cardVisible(26) && !cardVisible(27)) { cardsOnTable.value[17].cover = false }
+}
+
 /*************************************************
 *                     Helpers                    *
 *************************************************/
@@ -213,36 +237,33 @@ const checkWin = () => {
 	// cardsLeft === 0? / cardsOnStock === 0? / !checkLoss?
 	// pensar nestas condicoes acima 
 	console.log('checkWin')
-	//correr checkLoss()
-}
-
-const checkVisibility = () => {
-	// First row
-	if (!cardVisible(3) && !cardVisible(6)) { cardsOnTable.value[0].cover = false }
-	if (!cardVisible(4) && !cardVisible(7)) { cardsOnTable.value[1].cover = false }
-	if (!cardVisible(5) && !cardVisible(8)) { cardsOnTable.value[2].cover = false }
-	// Second row
-	if (!cardVisible(9) && !cardVisible(10)) { cardsOnTable.value[3].cover = false }
-	if (!cardVisible(10) && !cardVisible(11)) { cardsOnTable.value[6].cover = false }
-	if (!cardVisible(12) && !cardVisible(13)) { cardsOnTable.value[4].cover = false }
-	if (!cardVisible(13) && !cardVisible(14)) { cardsOnTable.value[7].cover = false }
-	if (!cardVisible(15) && !cardVisible(16)) { cardsOnTable.value[5].cover = false }
-	if (!cardVisible(16) && !cardVisible(17)) { cardsOnTable.value[8].cover = false }
-	// Third row
-	if (!cardVisible(18) && !cardVisible(19)) { cardsOnTable.value[9].cover = false }
-	if (!cardVisible(19) && !cardVisible(20)) { cardsOnTable.value[10].cover = false }
-	if (!cardVisible(20) && !cardVisible(21)) { cardsOnTable.value[11].cover = false }
-	if (!cardVisible(21) && !cardVisible(22)) { cardsOnTable.value[12].cover = false }
-	if (!cardVisible(22) && !cardVisible(23)) { cardsOnTable.value[13].cover = false }
-	if (!cardVisible(23) && !cardVisible(24)) { cardsOnTable.value[14].cover = false }
-	if (!cardVisible(24) && !cardVisible(25)) { cardsOnTable.value[15].cover = false }
-	if (!cardVisible(25) && !cardVisible(26)) { cardsOnTable.value[16].cover = false }
-	if (!cardVisible(26) && !cardVisible(27)) { cardsOnTable.value[17].cover = false }
+	checkLoss()
 }
 
 const checkLoss = () => {
 	// Verificar se há movimentos possiveis
-	console.log('checkMovesLeft')
+	let possiblePlays = 0
+
+	if (!cardsOnStock.value.length) {
+		const arrLen = cardsOnTable.value.length
+		
+		for (let i = 0; i < arrLen; i++) {
+			let waste = parseInt(cardsOnWaste.value.slice(-1)[0].id.slice(1, 3))
+			let table = parseInt(cardsOnTable.value[i].id.slice(1, 3))
+
+			if ((waste === 13 && table === 1 || waste === 1 && table === 13 ||
+				waste === table + 1 || waste === table - 1) &&
+				!cardsOnTable.value[i].cover && cardsOnTable.value[i].visible) {
+					possiblePlays++
+					console.log(`${waste} ${table}/${i} ${possiblePlays}`)
+			}
+		}
+		console.log(possiblePlays)
+		if (possiblePlays === 0 ) {
+			// console
+			console.log('GAME OVER')
+		}
+	}
 }
 
 /*************************************************
@@ -276,11 +297,10 @@ onBeforeMount(() => {
 	flex-direction: column;
 	gap: 15px;
 	width: 700px;
-	height: 290px;
+	height: 250px;
 	position: relative;
 	align-items: center;
-	background-color: #257925;
-	
+	background-color: #257925;	
 }
 .row1 {
 	display: flex;
@@ -321,6 +341,7 @@ onBeforeMount(() => {
 }
 .row4-pos {	z-index: 4; }
 .stock-waste {
+	padding-top: 40px;
 	position: relative;
 	width: 700px;
 	height: 150px;
