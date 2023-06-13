@@ -1,5 +1,5 @@
 <template>
-	<div class="board">
+	<div class="board" v-if="!gameOver">
 		<div class="row1">
 			<div v-for="card in range(0,2)" :key="card" :class="sendToBack('row1-pos', card)">
 				<single-card :params="cardProps('table', card)" @click="cardClickHandler('table', card)"/>
@@ -26,6 +26,9 @@
 			</div>
 		</div>
 	</div>
+	<div class="game-over" v-else>
+		<div class="game-over-text">Game Over</div>
+	</div>
 	<div class="stock-waste">
 		<div class="waste">
 			<single-card :params="cardProps('waste')" class="waste-cards"/>
@@ -37,14 +40,14 @@
 			class="stock-cards">
 				<single-card :params="{ cover: true }" @click="index === 0 ? cardClickHandler('stock') : null"/>
 			</div>
-			<div class="game-over"></div>
+			<div class="stock-over"></div>
 		</div>
+	</div>
+	<div class="msg-log" v-if="cardsOnStock.length">
+		<h5 style="color:lightgrey">Cards left: {{ cardsOnStock.length }}.</h5>
 	</div>
 	<button class="btn-reset" @click="startGame">New Game</button>
 	
-	<div class="msg-log">
-		<h5 style="color:lightgrey">Log: {{ gameStatus }} Cards left: {{ cardsLeft }}.</h5>
-	</div>
 </template>
 
 <script setup>
@@ -61,6 +64,7 @@ const cardsOnWaste = ref([])
 const cardsOnTable = ref([])
 const gameStatus = ref('')
 const cardsLeft = ref(0)
+const gameOver = ref(false)
 
 /*************************************************
 *                    Functions                   *
@@ -73,6 +77,7 @@ const startGame = () => {
 	cardsOnStock.value = [] // Reset decks
 	cardsOnWaste.value = [] // Reset decks
 	cardsOnTable.value = [] // Reset decks
+	gameOver.value = false
 	
 	cardsOnStock.value = fy_shuffle(cardData) // Shuffle deck
 	arrLen = cardsOnStock.value.length
@@ -106,15 +111,12 @@ const checkPlay = (cardPosition) => {
 	
 	if (waste === 13 && table === 1 || waste === 1 && table === 13 ||
 		waste === table + 1 || waste === table - 1) {
-			console.log ('valido')
 			cardsOnWaste.value.push(cardsOnTable.value[cardPosition])
 			cardsOnTable.value[cardPosition].visible = false
 			cardsLeft.value--
 			checkVisibility()
 			checkWin()
 		}
-	// console
-	gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
 }
 
 const checkVisibility = () => {
@@ -185,46 +187,46 @@ function cardProps(whereIsCard, singleCardId) {
 	
 }
 
-function cardToText (card) {
-	let cardSuit, cardValue
+// function cardToText (card) {
+// 	let cardSuit, cardValue
 
-	switch (card.slice(0, 1)) {
-		case '1':
-			cardSuit = '♣'
-			break
-		case '2':
-			cardSuit = '♦'
-			break
-		case '3':
-			cardSuit = '♠'
-			break
-		case '4':
-			cardSuit = '♥'
-			break
-	}
+// 	switch (card.slice(0, 1)) {
+// 		case '1':
+// 			cardSuit = '♣'
+// 			break
+// 		case '2':
+// 			cardSuit = '♦'
+// 			break
+// 		case '3':
+// 			cardSuit = '♠'
+// 			break
+// 		case '4':
+// 			cardSuit = '♥'
+// 			break
+// 	}
 
-	switch (card.slice(1, 3)) {
-		case '01':
-			cardValue = 'A'
-			break
-		case '10':
-			cardValue = '10'
-			break
-		case '11':
-			cardValue = 'J'
-			break
-		case '12':
-			cardValue = 'Q'
-			break
-		case '13':
-			cardValue = 'K'
-			break
-		default:
-			cardValue = card.slice(2, 3)
-			break
-	}
-	return cardValue + cardSuit
-}
+// 	switch (card.slice(1, 3)) {
+// 		case '01':
+// 			cardValue = 'A'
+// 			break
+// 		case '10':
+// 			cardValue = '10'
+// 			break
+// 		case '11':
+// 			cardValue = 'J'
+// 			break
+// 		case '12':
+// 			cardValue = 'Q'
+// 			break
+// 		case '13':
+// 			cardValue = 'K'
+// 			break
+// 		default:
+// 			cardValue = card.slice(2, 3)
+// 			break
+// 	}
+// 	return cardValue + cardSuit
+// }
 
 function cardVisible(card) {
 	return cardsOnTable.value[card].visible
@@ -241,7 +243,7 @@ const checkWin = () => {
 }
 
 const checkLoss = () => {
-	// Verificar se há movimentos possiveis
+	// Check for possible moves
 	let possiblePlays = 0
 
 	if (!cardsOnStock.value.length) {
@@ -255,13 +257,10 @@ const checkLoss = () => {
 				waste === table + 1 || waste === table - 1) &&
 				!cardsOnTable.value[i].cover && cardsOnTable.value[i].visible) {
 					possiblePlays++
-					console.log(`${waste} ${table}/${i} ${possiblePlays}`)
 			}
 		}
-		console.log(possiblePlays)
 		if (possiblePlays === 0 ) {
-			// console
-			console.log('GAME OVER')
+			gameOver.value = true
 		}
 	}
 }
@@ -271,16 +270,13 @@ const checkLoss = () => {
 *************************************************/
 const cardClickHandler = (where, cardPosition) => {
 	if (where === 'table') {
-		// console
-		console.log(cardPosition)
 		if (!cardsOnTable.value[cardPosition].cover) {
 			checkPlay(cardPosition)
 		}
 	}
 	if (where === 'stock') {
 		cardsOnWaste.value.push(cardsOnStock.value.pop())
-		gameStatus.value = 'Stock pile clicked.'
-		checkWin()
+		checkLoss()
 	}
 }
 
@@ -301,6 +297,23 @@ onBeforeMount(() => {
 	position: relative;
 	align-items: center;
 	background-color: #257925;	
+}
+.game-over {
+	top: 30px;
+	margin: auto;
+	width: 700px;
+	height: 250px;
+}
+.game-over-text {
+	color: #ff2020ae;
+	text-transform: uppercase;
+	text-shadow: 3px 3px 5px rgb(49, 48, 48);;
+	font-size: 75px;
+	font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 40vh;
 }
 .row1 {
 	display: flex;
@@ -344,7 +357,7 @@ onBeforeMount(() => {
 	padding-top: 40px;
 	position: relative;
 	width: 700px;
-	height: 150px;
+	height: 110px;
 	margin: auto;
 }
 .waste {
@@ -366,7 +379,7 @@ onBeforeMount(() => {
 	position: absolute;
 	left: 5px;
 }
-.game-over {
+.stock-over {
 	-webkit-box-shadow:inset 0px 0px 0px 4px #ff2020ae;
 	-moz-box-shadow:inset 0px 0px 0px 4px #ff2020ae;
 	box-shadow:inset 0px 0px 0px 4px #ff2020ae;
@@ -383,6 +396,7 @@ onBeforeMount(() => {
 	margin: auto;
 }
 .btn-reset {
+	margin-top: 10px;
 	align-self: auto;
 }
 .send-back {
