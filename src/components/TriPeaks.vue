@@ -48,17 +48,23 @@
 </template>
 
 <script setup>
+/* Generic Components */
 import SingleCard from '@/components/SingleCard'
 import cardData from '@/assets/cards/cards.json'
 
+/* Assets & Helpers */
 import { ref, onBeforeMount } from 'vue'
 
+/* Data */
 const cardsOnStock = ref([])
 const cardsOnWaste = ref([])
 const cardsOnTable = ref([])
 const gameStatus = ref('')
 const cardsLeft = ref(0)
 
+/*************************************************
+*                    Functions                   *
+*************************************************/
 const startGame = () => {
 	const remainingCards = []
 	let arrLen
@@ -92,6 +98,23 @@ const startGame = () => {
 	cardsOnStock.value = remainingCards
 	cardsLeft.value = cardsOnTable.value.length
 	gameStatus.value = 'New game started.'
+}
+
+const checkPlay = (cardPosition) => {
+	const waste = parseInt(cardsOnWaste.value.slice(-1)[0].id.slice(1, 3))
+	const table = parseInt(cardsOnTable.value[cardPosition].id.slice(1, 3))
+	
+	if (waste === 13 && table === 1 || waste === 1 && table === 13 ||
+		waste === table + 1 || waste === table - 1) {
+			console.log ('valido')
+			cardsOnWaste.value.push(cardsOnTable.value[cardPosition])
+			cardsOnTable.value[cardPosition].visible = false
+			cardsLeft.value--
+			checkVisibility()
+			checkWin()
+		}
+	// console
+	gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
 }
 
 const range = (start, end) => {
@@ -135,26 +158,6 @@ function cardProps(whereIsCard, singleCardId) {
 	
 }
 
-const checkWin = () => {
-	console.log('checkWin')
-}
-
-const cardClickHandler = (where, cardPosition) => {
-	if (where === 'table') {
-		if (cardsOnTable.value[cardPosition].cover) cardsOnTable.value[cardPosition].cover = false
-		else {
-			cardsOnTable.value[cardPosition].visible = false
-		}
-
-		gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
-	}
-	if (where === 'stock') {
-		cardsOnWaste.value.push(cardsOnStock.value.pop())
-		gameStatus.value = 'Stock pile clicked.'
-		checkWin()
-	}
-}
-
 function cardToText (card) {
 	let cardSuit, cardValue
 
@@ -194,6 +197,43 @@ function cardToText (card) {
 			break
 	}
 	return cardValue + cardSuit
+}
+
+/*************************************************
+*                WORK IN PROGRESS                *
+*************************************************/
+const checkWin = () => {
+	// cardsLeft === 0? / cardsOnStock === 0? / !checkLoss?
+	// pensar nestas condicoes acima 
+	console.log('checkWin')
+	//correr checkLoss()
+}
+
+const checkVisibility = () => {
+	// Verificar se pode mostrar cartas com cover = true
+	// if (cardsOnTable.value[cardPosition].cover) { cardsOnTable.value[cardPosition].cover = false } // eventualmente passar isto para checkVisibility()
+	console.log('checkVisibility')
+}
+
+const checkLoss = () => {
+	// Verificar se há movimentos possiveis
+	console.log('checkMovesLeft')
+}
+
+/*************************************************
+*                 Click Handlers                 *
+*************************************************/
+const cardClickHandler = (where, cardPosition) => {
+	if (where === 'table') {
+		if (!cardsOnTable.value[cardPosition].cover) {
+			checkPlay(cardPosition)
+		}
+	}
+	if (where === 'stock') {
+		cardsOnWaste.value.push(cardsOnStock.value.pop())
+		gameStatus.value = 'Stock pile clicked.'
+		checkWin()
+	}
 }
 
 onBeforeMount(() => {
