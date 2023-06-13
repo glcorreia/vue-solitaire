@@ -117,6 +117,9 @@ const checkPlay = (cardPosition) => {
 	gameStatus.value = cardToText(cardsOnTable.value[cardPosition].id) + ' clicked.'
 }
 
+/*************************************************
+*                     Helpers                    *
+*************************************************/
 const range = (start, end) => {
 	return Array(end - start + 1).fill().map((_, idx) => start + idx)
 }
@@ -199,6 +202,10 @@ function cardToText (card) {
 	return cardValue + cardSuit
 }
 
+function cardVisible(card) {
+	return cardsOnTable.value[card].visible
+}
+
 /*************************************************
 *                WORK IN PROGRESS                *
 *************************************************/
@@ -210,9 +217,27 @@ const checkWin = () => {
 }
 
 const checkVisibility = () => {
-	// Verificar se pode mostrar cartas com cover = true
-	// if (cardsOnTable.value[cardPosition].cover) { cardsOnTable.value[cardPosition].cover = false } // eventualmente passar isto para checkVisibility()
-	console.log('checkVisibility')
+	// First row
+	if (!cardVisible(3) && !cardVisible(6)) { cardsOnTable.value[0].cover = false }
+	if (!cardVisible(4) && !cardVisible(7)) { cardsOnTable.value[1].cover = false }
+	if (!cardVisible(5) && !cardVisible(8)) { cardsOnTable.value[2].cover = false }
+	// Second row
+	if (!cardVisible(9) && !cardVisible(10)) { cardsOnTable.value[3].cover = false }
+	if (!cardVisible(10) && !cardVisible(11)) { cardsOnTable.value[6].cover = false }
+	if (!cardVisible(12) && !cardVisible(13)) { cardsOnTable.value[4].cover = false }
+	if (!cardVisible(13) && !cardVisible(14)) { cardsOnTable.value[7].cover = false }
+	if (!cardVisible(15) && !cardVisible(16)) { cardsOnTable.value[5].cover = false }
+	if (!cardVisible(16) && !cardVisible(17)) { cardsOnTable.value[8].cover = false }
+	// Third row
+	if (!cardVisible(18) && !cardVisible(19)) { cardsOnTable.value[9].cover = false }
+	if (!cardVisible(19) && !cardVisible(20)) { cardsOnTable.value[10].cover = false }
+	if (!cardVisible(20) && !cardVisible(21)) { cardsOnTable.value[11].cover = false }
+	if (!cardVisible(21) && !cardVisible(22)) { cardsOnTable.value[12].cover = false }
+	if (!cardVisible(22) && !cardVisible(23)) { cardsOnTable.value[13].cover = false }
+	if (!cardVisible(23) && !cardVisible(24)) { cardsOnTable.value[14].cover = false }
+	if (!cardVisible(24) && !cardVisible(25)) { cardsOnTable.value[15].cover = false }
+	if (!cardVisible(25) && !cardVisible(26)) { cardsOnTable.value[16].cover = false }
+	if (!cardVisible(26) && !cardVisible(27)) { cardsOnTable.value[17].cover = false }
 }
 
 const checkLoss = () => {
@@ -225,6 +250,8 @@ const checkLoss = () => {
 *************************************************/
 const cardClickHandler = (where, cardPosition) => {
 	if (where === 'table') {
+		// console
+		console.log(cardPosition)
 		if (!cardsOnTable.value[cardPosition].cover) {
 			checkPlay(cardPosition)
 		}
